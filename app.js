@@ -1,6 +1,7 @@
 const express=require("express");
 const app=express();
 const fs=require("fs");
+const jwt=require("jsonwebtoken");
 
 //this middleware is used to make req.body works
 app.use(express.json());
@@ -68,6 +69,21 @@ app.get("/gettodo",(req,res)=>{
     res.send(resttod);
 })
 
+app.post("/register",(req,res)=>{
+    const {username,email}=req.body;
+    console.log("sdafsadf");
+    const token=jwt.sign({_id:username},"SECRET");
+    console.log(token);
+    const options={
+        expires:new Date(Date.now()+90*24*60*60*1000),
+        httpOnly:true,
+    }
+
+    res.status(201).cookie("token",token,options).json({
+        username,
+        token
+    })
+})
 app.listen(3000,()=>{
     console.log("listening on port")
 })
